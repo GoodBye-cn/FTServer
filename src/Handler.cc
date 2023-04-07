@@ -21,7 +21,7 @@ void Handler::read_cb(struct bufferevent* bev, void* ctx) {
     size_t ret = 0;
     ret = bufferevent_read(bev, data, readable_size);
     read_bytes += ret;
-    handler->read_bytes += ret;
+    handler->read_bytes = read_bytes;
 }
 
 void Handler::write_cb(struct bufferevent* bev, void* ctx) {}
