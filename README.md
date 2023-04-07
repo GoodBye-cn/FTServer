@@ -27,10 +27,13 @@ list: Handler
 ### Handler
 处理请求：read, write
 
+一个Handler中包含一个bufferevent
+
 读取数据后将数据传送给Worker，然后Worker对数据进行处理，Worker处理完成后将结果传给Handler并发送给客户端
 
 数据：
 线程池或者线程池指针
+bufferevent 指针
 
 流程：
 1. 设置读、写、事件回调函数

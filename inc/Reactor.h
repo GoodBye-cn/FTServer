@@ -10,11 +10,10 @@
 
 #include <list>
 
-#include "Handler.h"
-
 using namespace std;
 
 class Acceptor;
+class Handler;
 
 class Reactor {
 public:
@@ -22,10 +21,11 @@ public:
     ~Reactor();
     void start();
 
+    void add_handler(Handler* handler);
     static void accept_conn_cb(struct evconnlistener* listener,
         evutil_socket_t fd, struct sockaddr* address, int socklen,
         void* ctx);
-    static void sigquit_cb(evutil_socket_t sig, short what, void* arg);
+    static void sigquit_cb(evutil_socket_t sig, short what, void* ctx);
 private:
     event_base* base;
     event* sigquit_event;
@@ -34,7 +34,7 @@ private:
     short port;
     const char* ip;
     Acceptor* acceptor;
-    list<Handler> handlers;
+    list<Handler*> handlers;
 };
 
 

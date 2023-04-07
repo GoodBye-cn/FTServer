@@ -1,22 +1,20 @@
 #ifndef HANDLER_H
 #define HANDLER_H
 
-class Handler
-{
-private:
-    /* data */
+#include <event2/bufferevent.h>
+
+class Handler {
 public:
-    Handler(/* args */);
+    Handler();
+    Handler(bufferevent* bev);
     ~Handler();
+    static void read_cb(struct bufferevent* bev, void* ctx);
+    static void write_cb(struct bufferevent* bev, void* ctx);
+    static void event_cb(struct bufferevent* bev, short what, void* ctx);
+
+private:
+    bufferevent* bev;
 };
-
-Handler::Handler(/* args */)
-{
-}
-
-Handler::~Handler()
-{
-}
 
 
 #endif

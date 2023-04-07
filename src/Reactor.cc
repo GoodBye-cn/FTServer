@@ -40,6 +40,10 @@ void Reactor::start() {
     event_base_dispatch(base);
 }
 
+void Reactor::add_handler(Handler* handler) {
+    handlers.push_back(handler);
+}
+
 /**
  * @brief 接收新的客户端连接
  * @details 通过Reactor指针，将参数传递给Acceptor的连接处理函数中
@@ -51,6 +55,6 @@ void Reactor::accept_conn_cb(struct evconnlistener* listener,
     reactor->acceptor->accept_conn(listener, fd, address, socklen, ctx);
 }
 
-void Reactor::sigquit_cb(evutil_socket_t, short, void*) {
+void Reactor::sigquit_cb(evutil_socket_t sig, short what, void* ctx) {
     printf("SIGQUIT\n");
 }
