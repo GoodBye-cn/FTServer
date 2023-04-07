@@ -2,8 +2,8 @@
 FTServer 使用libevent库
 用来传输文件
 
-Reactor模式
-![Reactor](https://pica.zhimg.com/80/v2-66a4675ea9604867ad6889c3d598d0fc_720w.webp?source=1940ef5c)
+单Reactor 多线程模式
+![Reactor](https://img-blog.csdnimg.cn/20200514143929138.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1dvb19ob21l,size_16,color_FFFFFF,t_70)
 
 ## Reactor
 负责监听请求（select, epoll, poll），通过分发器（Dispatch）将请求分发给Handler或者Acceptor
@@ -47,12 +47,6 @@ bufferevent 指针
 ## Worker
 负责业务逻辑，可以使用线程池
 
-## ThreadPool
-线程池，用于管理Worker
-
-## Task
-任务队列模型
-
 是否考虑使用http协议传输数据？
 
 自定义协议的数据类型
@@ -67,4 +61,10 @@ char path[PATHLEN] 文件的路径
 size_t len 文件的长度
 文件的比特流
 ```
+
+## ThreadPool
+线程池，用于管理Worker
+
+## Task
+任务队列模型
 
