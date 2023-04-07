@@ -1,6 +1,9 @@
 # FTServer
 FTServer 使用libevent库
 
+Reactor模式
+![Reactor](https://pica.zhimg.com/80/v2-66a4675ea9604867ad6889c3d598d0fc_720w.webp?source=1940ef5c)
+
 ## Reactor
 负责监听请求（select, epoll, poll），通过分发器（Dispatch）将请求分发给Handler或者Acceptor
 
@@ -42,3 +45,6 @@ bufferevent 指针
 
 ## Worker
 负责业务逻辑，可以使用线程池
+
+## ThreadPool
+线程池，用于管理Worker
