@@ -48,3 +48,6 @@ bufferevent 指针
 
 ## ThreadPool
 线程池，用于管理Worker
+
+## Task
+任务队列模型
