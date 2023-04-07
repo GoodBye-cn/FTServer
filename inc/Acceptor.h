@@ -1,17 +1,19 @@
 #ifndef ACCEPTER_H
 #define ACCEPTER_H
 
+#include <event2/listener.h>
+#include <Reactor.h>
+
+
 class Acceptor {
-private:
-    /* data */
 public:
     Acceptor(/* args */);
     ~Acceptor();
+    void accept_conn(struct evconnlistener* listener,
+        evutil_socket_t fd, struct sockaddr* address, int socklen,
+        void* ctx);
+private:
+    /* data */
 };
-
-Acceptor::Acceptor(/* args */) {}
-
-Acceptor::~Acceptor() {}
-
 
 #endif

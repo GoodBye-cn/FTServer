@@ -15,12 +15,14 @@ Reactor::Reactor() {
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
     addr.sin_addr.s_addr = inet_addr("0.0.0.0");
+    acceptor = new Acceptor();
 }
 
 Reactor::~Reactor() {
     event_free(sigquit_event);
     event_base_free(base);
     evconnlistener_free(listener);
+    delete acceptor;
 }
 
 void Reactor::start() {
@@ -41,6 +43,8 @@ void Reactor::start() {
 void Reactor::accept_conn_cb(struct evconnlistener* listener,
     evutil_socket_t fd, struct sockaddr* address, int socklen,
     void* ctx) {
+    Reactor* reactor = (Reactor*)ctx;
+    
     event_base* base = evconnlistener_get_base(listener);
     bufferevent* bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
 }
