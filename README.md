@@ -13,7 +13,7 @@ list: Handler
 1. 设置监听的端口的IP地址
 2. 建立event_base
 3. 设置信号处理函数
-2. 使用evconnlistener_new_bind监听连接
+2. 使用evconnlistener_new_bind监听连接，判断是监听端口还是连接的客户端口
 3. 分发给Acceptor或者Handler
 
 ### Acceptor
