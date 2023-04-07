@@ -1,5 +1,6 @@
 # FTServer
 FTServer 使用libevent库
+用来传输文件
 
 Reactor模式
 ![Reactor](https://pica.zhimg.com/80/v2-66a4675ea9604867ad6889c3d598d0fc_720w.webp?source=1940ef5c)
