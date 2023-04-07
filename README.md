@@ -15,6 +15,11 @@ list: Handler
 
 ### Acceptor
 建立连接，创建Handler对象
+
+流程：
+1. 获得socket描述符
+2. 创建Handler：使用bufferevent_socket_new创建bufferevent
+3. 将Handler添加到Reactor的Handler列表里面
 ### Handler
 处理请求：read, write
 
