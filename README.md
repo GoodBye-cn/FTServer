@@ -63,8 +63,9 @@ size_t len 文件的长度
 ```
 
 ## ThreadPool
-线程池，用于管理Worker
+线程池，用于管理线程
 
 ## Task
-任务队列模型
+任务：Worker
 
+Worker应设置有处理函数
