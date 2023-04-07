@@ -40,13 +40,15 @@ void Reactor::start() {
     event_base_dispatch(base);
 }
 
+/**
+ * @brief 接收新的客户端连接
+ * @details 通过Reactor指针，将参数传递给Acceptor的连接处理函数中
+ */
 void Reactor::accept_conn_cb(struct evconnlistener* listener,
     evutil_socket_t fd, struct sockaddr* address, int socklen,
     void* ctx) {
     Reactor* reactor = (Reactor*)ctx;
-    
-    event_base* base = evconnlistener_get_base(listener);
-    bufferevent* bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
+    reactor->acceptor->accept_conn(listener, fd, address, socklen, ctx);
 }
 
 void Reactor::sigquit_cb(evutil_socket_t, short, void*) {
