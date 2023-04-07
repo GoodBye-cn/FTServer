@@ -3,6 +3,8 @@
 
 #include <event2/bufferevent.h>
 
+#define BUFFLEN 2048
+
 class Handler {
 public:
     Handler();
@@ -14,6 +16,8 @@ public:
 
 private:
     bufferevent* bev;
+    size_t read_bytes, write_bytes;
+    char read_buff[BUFFLEN], write_buff[BUFFLEN];
 };
 
 
