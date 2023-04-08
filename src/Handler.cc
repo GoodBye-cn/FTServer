@@ -26,6 +26,9 @@ void Handler::read_cb(struct bufferevent* bev, void* ctx) {
     handler->read_bytes = read_bytes;
 }
 
+/**
+ * @details bufferevent的写回调函数，当bufferevent的output evbuffer缓冲区发送完成后被调用。需要先主动调用 bufferevent_write 函数
+ */
 void Handler::write_cb(struct bufferevent* bev, void* ctx) {
     printf("write callback\n");
 }

@@ -40,11 +40,17 @@ list: Handler
 
 读取数据后将数据传送给Worker，然后Worker对数据进行处理，Worker处理完成后将结果传给Handler并发送给客户端
 
-read_cb：读取数据放到readbuff，读取完成后调用Worker的process函数
+read_cb函数的功能：
+读取数据放到readbuff，读取完成后调用Worker的process函数
 
-write_cb：
+write_cb函数的功能：
+
 判断文件是否发送完毕
+
 将buff中的数据放到 bufferevent，并通知Worker继续读取文件
+
+触发条件：
+bufferevent的写回调函数，当bufferevent的output evbuffer缓冲区发送完成后被调用。需要先主动调用 bufferevent_write 函数
 
 数据：
 线程池或者线程池指针
@@ -61,7 +67,7 @@ bufferevent 指针
 任务：
 1. 解析文件请求，获取文件路径，判断路径是否正确
 2. 打开文件
-3. 设置发送的抱头信息，并设置
+3. 设置发送的报头信息，主动调用bufferevent_write函数，发送报头数据
 4. 读取文件放到buff
 
 是否考虑使用http协议传输数据？
