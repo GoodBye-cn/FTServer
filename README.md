@@ -31,7 +31,7 @@ list: Handler
 ### Handler
 处理请求：read, write
 
-一个Handler对应一个client
+一个Handler对应一个client，一个Worker
 1. 客户请求文件
 2. 服务器读取文件
 3. 客户端发送文件
