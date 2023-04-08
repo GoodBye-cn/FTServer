@@ -37,8 +37,17 @@ void Handler::read_cb(struct bufferevent* bev, void* ctx) {
  */
 void Handler::write_cb(struct bufferevent* bev, void* ctx) {
     printf("write callback\n");
+    
 }
 
 void Handler::event_cb(struct bufferevent* bev, short what, void* ctx) {
     printf("event callback\n");
+}
+
+int Handler::write_data(char* data, size_t size) {
+    return bufferevent_write(bev, data, size);
+}
+
+int Handler::write_to_buff(char* data, size_t size) {
+    memcpy(write_buff, data, size);
 }

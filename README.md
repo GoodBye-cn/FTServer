@@ -47,7 +47,7 @@ write_cb函数的功能：
 
 判断文件是否发送完毕
 
-将buff中的数据放到 bufferevent，并通知Worker继续读取文件
+通知Worker将文件数据放到bufferevent中，并通知Worker继续读取文件
 
 触发条件：
 bufferevent的写回调函数，当bufferevent的output evbuffer缓冲区发送完成后被调用。需要先主动调用 bufferevent_write 函数
@@ -68,7 +68,7 @@ bufferevent 指针
 1. 解析文件请求，获取文件路径，判断路径是否正确
 2. 打开文件
 3. 设置发送的报头信息，主动调用bufferevent_write函数，发送报头数据
-4. 读取文件放到buff
+4. 如果文件未读完，读取文件数据，直接放到bufferevent中，如果文件读完了，就什么也不干
 
 是否考虑使用http协议传输数据？
 
