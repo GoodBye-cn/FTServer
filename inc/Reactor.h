@@ -26,6 +26,7 @@ public:
         evutil_socket_t fd, struct sockaddr* address, int socklen,
         void* ctx);
     static void sigquit_cb(evutil_socket_t sig, short what, void* ctx);
+
 private:
     event_base* base;
     event* sigquit_event;

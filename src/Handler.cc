@@ -1,6 +1,8 @@
 #include "Handler.h"
 #include <event2/event.h>
 
+#include <stdio.h>
+
 Handler::Handler() {}
 Handler::~Handler() {}
 
@@ -24,5 +26,10 @@ void Handler::read_cb(struct bufferevent* bev, void* ctx) {
     handler->read_bytes = read_bytes;
 }
 
-void Handler::write_cb(struct bufferevent* bev, void* ctx) {}
-void Handler::event_cb(struct bufferevent* bev, short what, void* ctx) {}
+void Handler::write_cb(struct bufferevent* bev, void* ctx) {
+    printf("write callback\n");
+}
+
+void Handler::event_cb(struct bufferevent* bev, short what, void* ctx) {
+    printf("event callback\n");
+}
