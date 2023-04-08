@@ -5,6 +5,7 @@ class Worker {
 public:
     Worker(/* args */);
     ~Worker();
+    void process();
 private:
     /* data */
 };

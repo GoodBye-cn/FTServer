@@ -1,5 +1,7 @@
 #include "Worker.h"
 
-Worker::Worker(/* args */) {}
+Worker::Worker() {}
 
 Worker::~Worker() {}
+
+void Worker::process() {}
