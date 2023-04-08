@@ -35,6 +35,10 @@ list: Handler
 
 读取数据后将数据传送给Worker，然后Worker对数据进行处理，Worker处理完成后将结果传给Handler并发送给客户端
 
+read_cb：读取数据放到readbuff，读取完成后调用Worker的process函数
+
+write_cb：将buff中的数据放到 bufferevent，并通知Worker继续读取文件
+
 数据：
 线程池或者线程池指针
 bufferevent 指针
@@ -48,9 +52,9 @@ bufferevent 指针
 负责业务逻辑，可以将任务放到线程池
 
 任务：
-1. 解析文件请求，获取文件路径，判断路径是否正确，打开文件
-2. 读取文件放到bufferevent中
-
+1. 解析文件请求，获取文件路径，判断路径是否正确
+2. 打开文件
+3. 读取文件放到buff
 
 是否考虑使用http协议传输数据？
 
@@ -74,3 +78,5 @@ size_t len 文件的长度
 任务：Worker
 
 Worker应设置有处理函数
+
+Worker->process()
