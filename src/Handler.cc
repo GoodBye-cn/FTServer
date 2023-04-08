@@ -9,6 +9,7 @@ Handler::Handler() {
     this->worker = new Worker();
     worker->set_handler(this);
 }
+
 Handler::~Handler() {}
 
 Handler::Handler(bufferevent* bev) {
