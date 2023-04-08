@@ -31,13 +31,20 @@ list: Handler
 ### Handler
 处理请求：read, write
 
+一个Handler对应一个client
+1. 客户请求文件
+2. 服务器读取文件
+3. 客户端发送文件
+
 一个Handler中包含一个bufferevent
 
 读取数据后将数据传送给Worker，然后Worker对数据进行处理，Worker处理完成后将结果传给Handler并发送给客户端
 
 read_cb：读取数据放到readbuff，读取完成后调用Worker的process函数
 
-write_cb：将buff中的数据放到 bufferevent，并通知Worker继续读取文件
+write_cb：
+判断文件是否发送完毕
+将buff中的数据放到 bufferevent，并通知Worker继续读取文件
 
 数据：
 线程池或者线程池指针
@@ -54,7 +61,8 @@ bufferevent 指针
 任务：
 1. 解析文件请求，获取文件路径，判断路径是否正确
 2. 打开文件
-3. 读取文件放到buff
+3. 设置发送的抱头信息，并设置
+4. 读取文件放到buff
 
 是否考虑使用http协议传输数据？
 
