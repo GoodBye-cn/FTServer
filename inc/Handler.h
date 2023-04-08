@@ -5,6 +5,8 @@
 
 #define BUFFLEN 2048
 
+class Worker;
+
 class Handler {
 public:
     Handler();
@@ -18,6 +20,7 @@ private:
     bufferevent* bev;
     size_t read_bytes, write_bytes;
     char read_buff[BUFFLEN], write_buff[BUFFLEN];
+    Worker* worker;
 };
 
 

@@ -1,9 +1,14 @@
 #include "Handler.h"
+#include "Worker.h"
+
 #include <event2/event.h>
 
 #include <stdio.h>
 
-Handler::Handler() {}
+Handler::Handler() {
+    this->worker = new Worker();
+    worker->set_handler(this);
+}
 Handler::~Handler() {}
 
 Handler::Handler(bufferevent* bev) {
