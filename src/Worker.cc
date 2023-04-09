@@ -17,6 +17,7 @@ Worker::~Worker() {}
  */
 void Worker::process() {
     Line_Status line_state = LINE_OK;
+    int ret;
     while (true) {
         switch (status) {
         case PARSE:
@@ -32,9 +33,15 @@ void Worker::process() {
             /* 设置报头 */
             /* 发送报头 */
             /* 设置send_over为false */
+            open_file();
+            status = SEND;
             break;
         case SEND:
             /* 读取数据，调用Handler的write_data函数，直接放到bufferevent中，如果文件发送完，设置send_over为true */
+            ret = send_file();
+            if (ret == 0) {
+                status = PARSE;
+            }
             break;
         default:
             break;
@@ -62,4 +69,51 @@ Worker::Line_Status Worker::parse_request() {
         return LINE_OPEN;
     }
     return LINE_OPEN;
+}
+
+void Worker::open_file() {
+    fd = open(path, O_RDONLY);
+    if (fd == -1) {
+        /* 路径错误 */
+        response.size = -1;
+        read_over = true;
+    }
+    else {
+        read_over = false;
+        stat(path, &file_stat);
+        response.size = file_stat.st_size;
+    }
+    response.end[0] = '\r';
+    response.end[1] = '\n';
+    response.end[2] = '\r';
+    response.end[3] = '\n';
+    buff_size = sizeof(response);
+    memcpy(buff, &response, buff_size);
+    buff_wait_send = true;
+    handler->set_send_over(false);
+}
+
+int Worker::send_file() {
+    int ret = 0;
+    while (true) {
+        if (!buff_wait_send) {
+            buff_size = read(fd, buff, sizeof(buff));
+        }
+        /* 文件读取完毕 */
+        if (buff_size == 0) {
+            read_over = true;
+            close(fd);
+        }
+        ret = handler->write_data(buff, buff_size);
+        if (ret == -1) {
+            buff_wait_send = true;
+            return -1;
+        }
+        buff_wait_send = false;
+        if (!buff_wait_send && read_over) {
+            handler->set_send_over(true);
+            break;
+        }
+    }
+    return 0;
 }
