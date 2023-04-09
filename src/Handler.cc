@@ -35,8 +35,11 @@ void Handler::read_cb(struct bufferevent* bev, void* ctx) {
  */
 void Handler::write_cb(struct bufferevent* bev, void* ctx) {
     printf("write callback\n");
-    /* 将任务添加到线程池任务队列 */
-
+    Handler* handler = (Handler*)ctx;
+    /* 如果未发送完毕 */
+    if (!handler->send_over) {
+        /* 将任务添加到线程池任务队列 */
+    }
 }
 
 void Handler::event_cb(struct bufferevent* bev, short what, void* ctx) {
@@ -45,4 +48,8 @@ void Handler::event_cb(struct bufferevent* bev, short what, void* ctx) {
 
 int Handler::write_data(char* data, size_t size) {
     return bufferevent_write(bev, data, size);
+}
+
+void Handler::set_send_over(bool value) {
+    this->send_over = value;
 }

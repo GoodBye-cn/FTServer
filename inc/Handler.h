@@ -17,11 +17,11 @@ public:
     static void write_cb(struct bufferevent* bev, void* ctx);
     static void event_cb(struct bufferevent* bev, short what, void* ctx);
     int write_data(char* data, size_t size);
+    void set_send_over(bool value);
 private:
     bufferevent* bev;
-    size_t read_bytes, write_bytes;
-    char read_buff[BUFFLEN], write_buff[BUFFLEN];
     Worker* worker;
+    bool send_over;
 };
 
 
