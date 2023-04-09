@@ -9,6 +9,7 @@
 
 class Handler;
 
+
 class Worker {
 public:
     Worker(/* args */);
@@ -16,10 +17,14 @@ public:
     void process();
     void set_handler(Handler* handler);
     void write_to_buff(char* data, size_t size);
+public:
+    enum State { PARSE, OPENFILE, SEND };
+
 private:
     Handler* handler;
     char buff[BUFFLEN]; /* 存放数据的buff */
     int buff_size;      /* 当前buff中的数据大小 */
+    State state;
 };
 
 #endif

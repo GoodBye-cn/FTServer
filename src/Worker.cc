@@ -14,19 +14,22 @@ Worker::~Worker() {}
  * STATA: PARSE OPENFILE SEND
  */
 void Worker::process() {
-    if (/* 解析路径 */ false) {
-        /* 1. 解析路径 */
+    switch (state) {
+    case PARSE:
+        /* 解析路径 */
+        break;
+    case OPENFILE:
+        /* 打开文件 */
+        /* 设置报头 */
+        /* 发送报头 */
+        /* 设置send_over为false */
+        break;
+    case SEND:
+        /* 读取数据，调用Handler的write_data函数，直接放到bufferevent中，如果文件发送完，设置send_over为true */
+        break;
+    default:
+        break;
     }
-    if (/* 路径正确 */ false) {
-        /* 2. 打开文件 */
-        /* 3. 设置报头 */
-        /* 4. 发送报头 */
-        /* 5. 设置send_over为false */
-    }
-    if (/* 发送数据 */ false) {
-        /* 6. 读取数据，调用Handler的write_data函数，直接放到bufferevent中，如果文件发送完，设置send_over为true */
-    }
-
 }
 
 void Worker::set_handler(Handler* handler) {
