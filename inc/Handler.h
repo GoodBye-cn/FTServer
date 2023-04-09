@@ -17,7 +17,6 @@ public:
     static void write_cb(struct bufferevent* bev, void* ctx);
     static void event_cb(struct bufferevent* bev, short what, void* ctx);
     int write_data(char* data, size_t size);
-    int write_to_buff(char* data, size_t size);
 private:
     bufferevent* bev;
     size_t read_bytes, write_bytes;

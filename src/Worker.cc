@@ -31,3 +31,7 @@ void Worker::process() {
 void Worker::set_handler(Handler* handler) {
     this->handler = handler;
 }
+
+void Worker::write_to_buff(char* data, size_t size) {
+    memcpy(buff + buff_size, data, size);
+}

@@ -23,13 +23,11 @@ Handler::Handler(bufferevent* bev) {
  */
 void Handler::read_cb(struct bufferevent* bev, void* ctx) {
     Handler* handler = (Handler*)ctx;
-    char* data = handler->read_buff + handler->read_bytes;
-    size_t read_bytes = handler->read_bytes;
-    size_t readable_size = sizeof(handler->read_buff) - read_bytes - 1;
-    size_t ret = 0;
-    ret = bufferevent_read(bev, data, readable_size);
-    read_bytes += ret;
-    handler->read_bytes = read_bytes;
+    char buff[BUFFLEN];
+    size_t read_bytes = bufferevent_read(bev, buff, sizeof(buff));
+    handler->worker->write_to_buff(buff, read_bytes);
+    /* 将任务添加到线程池任务队列 */
+
 }
 
 /**
@@ -37,7 +35,8 @@ void Handler::read_cb(struct bufferevent* bev, void* ctx) {
  */
 void Handler::write_cb(struct bufferevent* bev, void* ctx) {
     printf("write callback\n");
-    
+    /* 将任务添加到线程池任务队列 */
+
 }
 
 void Handler::event_cb(struct bufferevent* bev, short what, void* ctx) {
@@ -46,8 +45,4 @@ void Handler::event_cb(struct bufferevent* bev, short what, void* ctx) {
 
 int Handler::write_data(char* data, size_t size) {
     return bufferevent_write(bev, data, size);
-}
-
-int Handler::write_to_buff(char* data, size_t size) {
-    memcpy(write_buff, data, size);
 }
