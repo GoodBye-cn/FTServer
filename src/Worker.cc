@@ -1,7 +1,9 @@
 #include "Worker.h"
 #include "Handler.h"
 
-Worker::Worker() {}
+Worker::Worker() {
+    this->state = PARSE;
+}
 
 Worker::~Worker() {}
 
@@ -38,4 +40,5 @@ void Worker::set_handler(Handler* handler) {
 
 void Worker::write_to_buff(char* data, size_t size) {
     memcpy(buff + buff_size, data, size);
+    buff_size += size;
 }
