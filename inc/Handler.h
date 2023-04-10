@@ -3,6 +3,7 @@
 
 #include <event2/bufferevent.h>
 #include <string.h>
+#include "Threadpool.h"
 
 #define BUFFLEN 2048
 
@@ -18,7 +19,9 @@ public:
     static void event_cb(struct bufferevent* bev, short what, void* ctx);
     int write_data(char* data, size_t size);
     void set_send_over(bool value);
+    void set_threadpool(Threadpool<Worker>* tp);
 private:
+    Threadpool<Worker>* threadpool;
     bufferevent* bev;
     Worker* worker;
     bool send_over;

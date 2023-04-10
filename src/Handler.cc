@@ -1,8 +1,9 @@
 #include "Handler.h"
 #include "Worker.h"
+#include "Threadpool.h"
 
 #include <event2/event.h>
-
+#include <functional>
 #include <stdio.h>
 
 Handler::Handler() {
@@ -27,7 +28,7 @@ void Handler::read_cb(struct bufferevent* bev, void* ctx) {
     size_t read_bytes = bufferevent_read(bev, buff, sizeof(buff));
     handler->worker->write_to_buff(buff, read_bytes);
     /* 将任务添加到线程池任务队列 */
-
+    handler->threadpool->append(handler->worker);
 }
 
 /**
@@ -52,4 +53,8 @@ int Handler::write_data(char* data, size_t size) {
 
 void Handler::set_send_over(bool value) {
     this->send_over = value;
+}
+
+void Handler::set_threadpool(Threadpool<Worker>* tp) {
+    this->threadpool = tp;
 }
