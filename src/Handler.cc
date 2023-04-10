@@ -12,7 +12,11 @@ Handler::Handler() {
     worker->set_handler(this);
 }
 
-Handler::~Handler() {}
+Handler::~Handler() {
+    delete worker;
+    worker = nullptr;
+    bufferevent_free(bev);
+}
 
 Handler::Handler(bufferevent* bev) {
     this->bev = bev;
@@ -49,7 +53,7 @@ void Handler::event_cb(struct bufferevent* bev, short what, void* ctx) {
     printf("event callback\n");
     /* 客户端断开连接或者发生错误，将这个Handler从Reactor中删除，析构这个类 */
     Handler* handler = (Handler*)ctx;
-    /* 相当于自己析构自己，这样好吗？ */
+    /* 相当于自己析构自己，这样好吗？有没有其他方法？采用通知的形式？ */
     handler->reactor->remove_handler(handler);
 }
 

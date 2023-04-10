@@ -74,6 +74,9 @@ void Threadpool<Task>::cycle() {
         Task* task = task_queue.front();
         task_queue.pop();
         locker.unlock();
+        if (task == nullptr) {
+            continue;
+        }
         task->process();
     }
 }

@@ -10,12 +10,15 @@ class Test {
 public:
     Test() {}
     ~Test() {}
-    void process();
+    void process() {
+        delete this;
+    }
 };
 
 int main(int, char**) {
     std::cout << "Hello, world!\n";
 
-    Threadpool<Test> tp(4, 100);
+    Test* test = new Test();
+    test->process();
     return 0;
 }

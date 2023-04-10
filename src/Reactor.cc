@@ -1,6 +1,6 @@
 #include "Reactor.h"
 #include "Acceptor.h"
-
+#include "Handler.h"
 
 #include <event2/listener.h>
 #include <event2/bufferevent.h>
@@ -61,4 +61,5 @@ void Reactor::sigquit_cb(evutil_socket_t sig, short what, void* ctx) {
 
 void Reactor::remove_handler(Handler* handler) {
     handlers.remove(handler);
+    delete handler;
 }
