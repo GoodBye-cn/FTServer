@@ -8,6 +8,7 @@
 #define BUFFLEN 2048
 
 class Worker;
+class Reactor;
 
 class Handler {
 public:
@@ -20,7 +21,9 @@ public:
     int write_data(char* data, size_t size);
     void set_send_over(bool value);
     void set_threadpool(Threadpool<Worker>* tp);
+    void set_reactor(Reactor*reactor);
 private:
+    Reactor* reactor;
     Threadpool<Worker>* threadpool;
     bufferevent* bev;
     Worker* worker;

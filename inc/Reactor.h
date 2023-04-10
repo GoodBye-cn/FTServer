@@ -26,6 +26,7 @@ public:
         evutil_socket_t fd, struct sockaddr* address, int socklen,
         void* ctx);
     static void sigquit_cb(evutil_socket_t sig, short what, void* ctx);
+    void remove_handler(Handler* handler);
 
 private:
     event_base* base;

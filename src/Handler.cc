@@ -1,6 +1,7 @@
 #include "Handler.h"
 #include "Worker.h"
 #include "Threadpool.h"
+#include "Reactor.h"
 
 #include <event2/event.h>
 #include <functional>
@@ -46,6 +47,10 @@ void Handler::write_cb(struct bufferevent* bev, void* ctx) {
 
 void Handler::event_cb(struct bufferevent* bev, short what, void* ctx) {
     printf("event callback\n");
+    /* 客户端断开连接或者发生错误，将这个Handler从Reactor中删除，析构这个类 */
+    Handler* handler = (Handler*)ctx;
+    /* 相当于自己析构自己，这样好吗？ */
+    handler->reactor->remove_handler(handler);
 }
 
 int Handler::write_data(char* data, size_t size) {
@@ -58,4 +63,8 @@ void Handler::set_send_over(bool value) {
 
 void Handler::set_threadpool(Threadpool<Worker>* tp) {
     this->threadpool = tp;
+}
+
+void Handler::set_reactor(Reactor* reactor) {
+    this->reactor = reactor;
 }

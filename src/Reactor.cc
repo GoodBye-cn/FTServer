@@ -58,3 +58,7 @@ void Reactor::accept_conn_cb(struct evconnlistener* listener,
 void Reactor::sigquit_cb(evutil_socket_t sig, short what, void* ctx) {
     printf("SIGQUIT\n");
 }
+
+void Reactor::remove_handler(Handler* handler) {
+    handlers.remove(handler);
+}

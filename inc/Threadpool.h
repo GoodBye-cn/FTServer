@@ -14,7 +14,7 @@ class Threadpool {
 public:
     Threadpool(unsigned int thread_number, unsigned int max_task_number);
     ~Threadpool();
-    void append(Task* task);
+    bool append(Task* task);
 private:
     static void worker(void* arg);
     void cycle();
@@ -46,12 +46,17 @@ template<typename Task>
 Threadpool<Task>::~Threadpool() {}
 
 template<typename Task>
-void Threadpool<Task>::append(Task* task) {
+bool Threadpool<Task>::append(Task* task) {
     std::unique_lock<std::mutex> locker(mutex_task);
+    if (task_number >= max_task_number) {
+        locker.unlock();
+        return false;
+    }
     task_number++;
     task_queue.push(task);
     locker.unlock();
     cond_task.notify_one();
+    return true;
 }
 
 template<typename Task>
@@ -66,7 +71,7 @@ void Threadpool<Task>::cycle() {
         std::unique_lock<std::mutex> locker(mutex_task);
         cond_task.wait(locker, [&]() {return !task_queue.empty();});
         task_number--;
-        Task *task = task_queue.front();
+        Task* task = task_queue.front();
         task_queue.pop();
         locker.unlock();
         task->process();
