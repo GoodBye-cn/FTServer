@@ -28,10 +28,12 @@ public:
     static void accept_conn_cb(struct evconnlistener* listener,
         evutil_socket_t fd, struct sockaddr* address, int socklen,
         void* ctx);
-    static void sigquit_cb(evutil_socket_t sig, short what, void* ctx);
     void remove_handler(Handler* handler);
     void set_threadpool(Threadpool<Worker>* threadpool);
     Threadpool<Worker>* get_threadpool();
+private:
+    static void sigquit_cb(evutil_socket_t sig, short what, void* ctx);
+
 private:
     event_base* base;
     event* sigquit_event;

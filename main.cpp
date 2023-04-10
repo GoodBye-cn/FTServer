@@ -22,6 +22,6 @@ int main(int, char**) {
     Threadpool<Worker>* tp = new Threadpool<Worker>(4, 100);
     Reactor reactor;
     reactor.set_threadpool(tp);
-    
+    reactor.start();
     return 0;
 }
