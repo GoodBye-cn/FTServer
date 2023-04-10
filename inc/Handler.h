@@ -15,13 +15,15 @@ public:
     Handler();
     Handler(bufferevent* bev);
     ~Handler();
-    static void read_cb(struct bufferevent* bev, void* ctx);
-    static void write_cb(struct bufferevent* bev, void* ctx);
-    static void event_cb(struct bufferevent* bev, short what, void* ctx);
+
     int write_data(char* data, size_t size);
     void set_send_over(bool value);
     void set_threadpool(Threadpool<Worker>* tp);
     void set_reactor(Reactor* reactor);
+private:
+    static void read_cb(struct bufferevent* bev, void* ctx);
+    static void write_cb(struct bufferevent* bev, void* ctx);
+    static void event_cb(struct bufferevent* bev, short what, void* ctx);
 private:
     Reactor* reactor;
     Threadpool<Worker>* threadpool;
