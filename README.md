@@ -91,6 +91,8 @@ size_t len 文件的长度
 ## ThreadPool
 线程池，用于管理线程
 
+有一个任务队列，用来存放Worker对象或者其指针，将任务取出后，调用其process函数
+
 ## Task
 任务：Worker
 

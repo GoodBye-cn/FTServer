@@ -53,6 +53,10 @@ void Worker::set_handler(Handler* handler) {
     this->handler = handler;
 }
 
+/**
+ * @details 将数据写到buff中，如果状态为OPENFILE 或者 SEND 时写入数据，会破坏数据
+ * 解决：添加状态判断，如果不是PARSE，就不写入
+ */
 void Worker::write_to_buff(char* data, size_t size) {
     memcpy(buff + buff_size, data, size);
     buff_size += size;
