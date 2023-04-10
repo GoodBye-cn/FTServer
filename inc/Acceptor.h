@@ -2,7 +2,6 @@
 #define ACCEPTER_H
 
 #include <event2/listener.h>
-#include <Reactor.h>
 
 
 class Acceptor {

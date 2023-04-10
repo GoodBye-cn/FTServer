@@ -3,6 +3,7 @@
 #include <event2/event.h>
 
 #include "Threadpool.h"
+#include "Reactor.h"
 
 std::function<void()> func;
 
@@ -18,7 +19,9 @@ public:
 int main(int, char**) {
     std::cout << "Hello, world!\n";
 
-    Test* test = new Test();
-    test->process();
+    Threadpool<Worker>* tp = new Threadpool<Worker>(4, 100);
+    Reactor reactor;
+    reactor.set_threadpool(tp);
+    
     return 0;
 }

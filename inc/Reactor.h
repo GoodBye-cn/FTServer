@@ -7,6 +7,8 @@
 #include <string.h>
 #include <event2/listener.h>
 
+#include "Threadpool.h"
+#include "Worker.h"
 
 #include <list>
 
@@ -14,6 +16,7 @@ using namespace std;
 
 class Acceptor;
 class Handler;
+class Worker;
 
 class Reactor {
 public:
@@ -27,7 +30,8 @@ public:
         void* ctx);
     static void sigquit_cb(evutil_socket_t sig, short what, void* ctx);
     void remove_handler(Handler* handler);
-
+    void set_threadpool(Threadpool<Worker>* threadpool);
+    Threadpool<Worker>* get_threadpool();
 private:
     event_base* base;
     event* sigquit_event;
@@ -37,6 +41,7 @@ private:
     const char* ip;
     Acceptor* acceptor;
     list<Handler*> handlers;
+    Threadpool<Worker>* threadpool;
 };
 
 

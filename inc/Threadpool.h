@@ -8,6 +8,7 @@
 #include <condition_variable>
 #include <functional>
 #include <future>
+#include <unistd.h>
 
 template<typename Task>
 class Threadpool {

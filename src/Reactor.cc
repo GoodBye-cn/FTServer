@@ -30,7 +30,7 @@ void Reactor::start() {
     sigquit_event = event_new(base, SIGQUIT, EV_SIGNAL | EV_PERSIST, sigquit_cb, NULL);
     event_add(sigquit_event, NULL);
 
-    listener = evconnlistener_new_bind(base, accept_conn_cb, NULL, LEV_OPT_CLOSE_ON_FREE | LEV_OPT_REUSEABLE, -1, (sockaddr*)&addr, sizeof(addr));
+    listener = evconnlistener_new_bind(base, accept_conn_cb, this, LEV_OPT_CLOSE_ON_FREE | LEV_OPT_REUSEABLE, -1, (sockaddr*)&addr, sizeof(addr));
 
     if (listener == NULL) {
         perror("Couldn't create listener");
@@ -62,4 +62,12 @@ void Reactor::sigquit_cb(evutil_socket_t sig, short what, void* ctx) {
 void Reactor::remove_handler(Handler* handler) {
     handlers.remove(handler);
     delete handler;
+}
+
+void Reactor::set_threadpool(Threadpool<Worker>* threadpool) {
+    this->threadpool = threadpool;
+}
+
+Threadpool<Worker>* Reactor::get_threadpool() {
+    return threadpool;
 }

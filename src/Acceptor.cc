@@ -1,5 +1,6 @@
 #include "Acceptor.h"
 #include "Handler.h"
+#include "Reactor.h"
 
 Acceptor::Acceptor() {}
 Acceptor::~Acceptor() {}
@@ -12,5 +13,6 @@ void Acceptor::accept_conn(struct evconnlistener* listener,
     bufferevent* bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
 
     Handler* handler = new Handler(bev);
+    handler->set_threadpool(reactor->get_threadpool());
     reactor->add_handler(handler);
 }
