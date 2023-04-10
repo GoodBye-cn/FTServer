@@ -7,10 +7,7 @@
 #include <functional>
 #include <stdio.h>
 
-Handler::Handler() {
-    this->worker = new Worker();
-    worker->set_handler(this);
-}
+Handler::Handler() {}
 
 Handler::~Handler() {
     delete worker;
@@ -20,8 +17,10 @@ Handler::~Handler() {
 
 Handler::Handler(bufferevent* bev) {
     this->bev = bev;
-    bufferevent_setcb(bev, read_cb, write_cb, event_cb, NULL);
+    bufferevent_setcb(bev, read_cb, write_cb, event_cb, this);
     bufferevent_enable(bev, EV_READ | EV_WRITE);
+    this->worker = new Worker();
+    worker->set_handler(this);
 }
 
 /**
@@ -58,7 +57,8 @@ void Handler::event_cb(struct bufferevent* bev, short what, void* ctx) {
 }
 
 int Handler::write_data(char* data, size_t size) {
-    return bufferevent_write(bev, data, size);
+    int ret = bufferevent_write(bev, data, size);
+    return ret;
 }
 
 void Handler::set_send_over(bool value) {

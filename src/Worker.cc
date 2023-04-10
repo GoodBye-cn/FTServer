@@ -41,6 +41,7 @@ void Worker::process() {
             ret = send_file();
             if (ret == 0) {
                 status = PARSE;
+                request.length = 0;
             }
             break;
         default:
@@ -64,9 +65,13 @@ void Worker::write_to_buff(char* data, size_t size) {
 
 Worker::Line_Status Worker::parse_request() {
     if (buff_size > sizeof(int)) {
-        memcpy(&request, buff, sizeof(int));
+        if (request.length == 0) {
+            memcpy(&request, buff, sizeof(int));
+        }
         /* 请求读取完毕，可以获取路径 */
         if (request.length + sizeof(int) == buff_size) {
+            memcpy(&request, buff, request.length);
+            request.path[request.length] = 0;
             path = request.path;
             return LINE_OK;
         }
