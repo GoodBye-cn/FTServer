@@ -23,10 +23,10 @@ void Worker::process() {
         case PARSE:
             /* 解析路径 */
             line_state = parse_request();
-            if (line_state == LINE_OK) {
-                status = OPENFILE;
+            if (line_state == LINE_BAD || line_state == LINE_OPEN) {
+                return;
             }
-            return;
+            status = OPENFILE;
             break;
         case OPENFILE:
             /* 打开文件 */
