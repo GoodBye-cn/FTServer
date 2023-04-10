@@ -47,7 +47,11 @@ Threadpool<Task>::~Threadpool() {}
 
 template<typename Task>
 void Threadpool<Task>::append(Task* task) {
-
+    std::unique_lock<std::mutex> locker(mutex_task);
+    task_number++;
+    task_queue.push(task);
+    locker.unlock();
+    cond_task.notify_one();
 }
 
 template<typename Task>

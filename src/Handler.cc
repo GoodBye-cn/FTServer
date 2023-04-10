@@ -40,6 +40,7 @@ void Handler::write_cb(struct bufferevent* bev, void* ctx) {
     /* 如果未发送完毕 */
     if (!handler->send_over) {
         /* 将任务添加到线程池任务队列 */
+        handler->threadpool->append(handler->worker);
     }
 }
 
