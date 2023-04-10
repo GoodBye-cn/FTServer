@@ -15,6 +15,7 @@ public:
     Threadpool(unsigned int thread_number, unsigned int max_task_number);
     ~Threadpool();
     bool append(Task* task);
+    bool stop();
 private:
     static void worker(void* arg);
     void cycle();
@@ -27,6 +28,7 @@ private:
     unsigned int task_number;
     unsigned int max_task_number;
     bool running;
+    unsigned int stopped_thread;
 };
 
 template<typename Task>
@@ -79,6 +81,19 @@ void Threadpool<Task>::cycle() {
         }
         task->process();
     }
+    std::unique_lock<std::mutex> locker(mutex_task);
+    stopped_thread++;
+    locker.unlock();
+}
+
+template<typename Task>
+bool Threadpool<Task>::stop() {
+    stopped_thread = 0;
+    running = false;
+    while (stopped_thread < thread_number) {
+        sleep(1);
+    }
+    return true;
 }
 
 
