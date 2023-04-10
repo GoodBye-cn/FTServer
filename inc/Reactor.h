@@ -23,9 +23,7 @@ public:
     Reactor();
     ~Reactor();
     void start();
-
     void add_handler(Handler* handler);
-
     void remove_handler(Handler* handler);
     void set_threadpool(Threadpool<Worker>* threadpool);
     Threadpool<Worker>* get_threadpool();
