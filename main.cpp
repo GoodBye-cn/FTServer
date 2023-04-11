@@ -19,7 +19,7 @@ public:
 int main(int, char**) {
     std::cout << "Hello, world!\n";
 
-    Threadpool<Worker>* tp = new Threadpool<Worker>(1, 100);
+    Threadpool<Worker>* tp = new Threadpool<Worker>(4, 100);
     Reactor reactor;
     reactor.set_threadpool(tp);
     reactor.start();

@@ -51,7 +51,7 @@ list: Handler
 
 判断文件是否发送完毕
 
-通知Worker将文件数据放到bufferevent中，并通知Worker继续读取文件
+通知Worker将文件数据放到bufferevent中，并通知Worker继续读取文件，多线程时，可能有多个线程同时写数据，出现错误
 
 该回调函数触发条件：
 bufferevent的写回调函数，当bufferevent的output evbuffer缓冲区发送完成后被调用。需要先主动调用 bufferevent_write 函数

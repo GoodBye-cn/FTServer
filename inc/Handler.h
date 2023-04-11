@@ -2,6 +2,7 @@
 #define HANDLER_H
 
 #include <event2/bufferevent.h>
+#include <mutex>
 #include <string.h>
 #include "Threadpool.h"
 

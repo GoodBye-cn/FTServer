@@ -14,5 +14,6 @@ void Acceptor::accept_conn(struct evconnlistener* listener,
 
     Handler* handler = new Handler(bev);
     handler->set_threadpool(reactor->get_threadpool());
+    handler->set_reactor(reactor);
     reactor->add_handler(handler);
 }
