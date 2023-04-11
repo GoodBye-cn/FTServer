@@ -43,7 +43,7 @@ void Worker::process() {
                 status = PARSE;
                 request.length = 0;
             }
-            break;
+            return;
         default:
             break;
         }
@@ -70,7 +70,7 @@ Worker::Line_Status Worker::parse_request() {
         }
         /* 请求读取完毕，可以获取路径 */
         if (request.length + sizeof(int) == buff_size) {
-            memcpy(&request, buff, request.length);
+            memcpy(&request, buff, request.length + sizeof(int));
             request.path[request.length] = 0;
             path = request.path;
             return LINE_OK;

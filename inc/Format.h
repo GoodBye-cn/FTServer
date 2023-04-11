@@ -9,7 +9,7 @@ struct Request {
 };
 
 struct Response {
-    unsigned int size;
+    int size;
     char end[4];
 };
 

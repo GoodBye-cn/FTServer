@@ -56,9 +56,11 @@ void Handler::event_cb(struct bufferevent* bev, short what, void* ctx) {
     handler->reactor->remove_handler(handler);
 }
 
+/**
+ * 有两个线程同时操作bev，worker线程和主线程
+ */
 int Handler::write_data(char* data, size_t size) {
-    int ret = bufferevent_write(bev, data, size);
-    return ret;
+    return bufferevent_write(bev, data, size);
 }
 
 void Handler::set_send_over(bool value) {

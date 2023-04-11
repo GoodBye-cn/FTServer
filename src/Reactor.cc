@@ -5,16 +5,18 @@
 #include <event2/listener.h>
 #include <event2/bufferevent.h>
 #include <event2/buffer.h>
+#include <event2/thread.h>
 #include <signal.h>
 
 Reactor::Reactor() {
-    this->base = event_base_new();
     this->port = 8888;
     this->ip = "0.0.0.0";
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
     addr.sin_addr.s_addr = inet_addr("0.0.0.0");
+    evthread_use_pthreads();
+    this->base = event_base_new();
     acceptor = new Acceptor();
 }
 
