@@ -21,6 +21,7 @@ public:
     void set_send_over(bool value);
     void set_threadpool(Threadpool<Worker>* tp);
     void set_reactor(Reactor* reactor);
+    void create_buff(size_t size);
 private:
     static void read_cb(struct bufferevent* bev, void* ctx);
     static void write_cb(struct bufferevent* bev, void* ctx);
@@ -30,7 +31,10 @@ private:
     Threadpool<Worker>* threadpool;
     bufferevent* bev;
     Worker* worker;
-    bool send_over;
+    bool send_over, buff_send_over;
+    char buff[BUFFLEN];
+    int buff_size, write_index;
+    std::mutex buff_mutex;
 };
 
 

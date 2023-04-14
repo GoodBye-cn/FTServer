@@ -3,6 +3,9 @@
 
 Worker::Worker() {
     this->status = PARSE;
+    this->buff_size = 0;
+    this->read_over = true;
+    this->buff_wait_send = false;
 }
 
 Worker::~Worker() {}
@@ -100,6 +103,7 @@ void Worker::open_file() {
     memcpy(buff, &response, buff_size);
     buff_wait_send = true;
     handler->set_send_over(false);
+    printf("file size: %d\n", response.size);
 }
 
 int Worker::send_file() {
@@ -125,4 +129,8 @@ int Worker::send_file() {
         }
     }
     return 0;
+}
+
+Worker::Status Worker::get_status() {
+    return this->status;
 }

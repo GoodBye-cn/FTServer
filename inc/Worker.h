@@ -29,6 +29,7 @@ public:
     Worker::Line_Status parse_request();
     void open_file();
     int send_file();
+    Status get_status();
 
 private:
     Handler* handler;

@@ -17,6 +17,10 @@ Handler::~Handler() {
 
 Handler::Handler(bufferevent* bev) {
     this->bev = bev;
+    this->buff_size = 0;
+    this->write_index = 0;
+    this->send_over = true;
+    this->buff_send_over = true;
     bufferevent_setcb(bev, read_cb, write_cb, event_cb, this);
     bufferevent_enable(bev, EV_READ | EV_WRITE);
     this->worker = new Worker();
@@ -27,12 +31,15 @@ Handler::Handler(bufferevent* bev) {
  * @details 读取数据到read buff中，后面在做详细处理
  */
 void Handler::read_cb(struct bufferevent* bev, void* ctx) {
+    printf("read callback\n");
     Handler* handler = (Handler*)ctx;
     char buff[BUFFLEN];
     size_t read_bytes = bufferevent_read(bev, buff, sizeof(buff));
     handler->worker->write_to_buff(buff, read_bytes);
     /* 将任务添加到线程池任务队列 */
-    handler->threadpool->append(handler->worker);
+    if (handler->worker->get_status() == Worker::PARSE) {
+        handler->threadpool->append(handler->worker);
+    }
 }
 
 /**
@@ -41,10 +48,23 @@ void Handler::read_cb(struct bufferevent* bev, void* ctx) {
 void Handler::write_cb(struct bufferevent* bev, void* ctx) {
     printf("write callback\n");
     Handler* handler = (Handler*)ctx;
-    /* 如果未发送完毕 */
-    if (!handler->send_over) {
-        /* 将任务添加到线程池任务队列 */
-        handler->threadpool->append(handler->worker);
+    /* 如果buff未发送完毕 */
+    if (!handler->buff_send_over) {
+        int ret;
+        std::unique_lock<std::mutex> lock(handler->buff_mutex);
+        size_t size = handler->buff_size - handler->write_index;
+        ret = bufferevent_write(bev, handler->buff + handler->write_index, size);
+        if (ret == 0) {
+            /* 发送成功，将清空缓存 */
+            handler->write_index = 0;
+            handler->buff_size = 0;
+            handler->buff_send_over = true;
+            /* 如果文件未完全将数据放到buff中，将任务添加到线程池任务队列，再次读取数据 */
+            if (!handler->send_over) {
+                handler->threadpool->append(handler->worker);
+            }
+        }
+        lock.unlock();
     }
 }
 
@@ -60,7 +80,13 @@ void Handler::event_cb(struct bufferevent* bev, short what, void* ctx) {
  * 有两个线程同时操作bev，worker线程和主线程
  */
 int Handler::write_data(char* data, size_t size) {
-    return bufferevent_write(bev, data, size);
+    int ret = 0;
+    std::unique_lock<std::mutex> lock(buff_mutex);
+    memcpy(buff, data, size);
+    buff_size = size;
+    buff_send_over = false;
+    lock.unlock();
+    return ret;
 }
 
 void Handler::set_send_over(bool value) {
@@ -74,3 +100,5 @@ void Handler::set_threadpool(Threadpool<Worker>* tp) {
 void Handler::set_reactor(Reactor* reactor) {
     this->reactor = reactor;
 }
+
+void Handler::create_buff(size_t size) {}

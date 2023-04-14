@@ -16,7 +16,7 @@ public:
     }
 };
 
-int main(int, char**) {
+int main(int argc, char** argv) {
     std::cout << "Hello, world!\n";
 
     Threadpool<Worker>* tp = new Threadpool<Worker>(1, 100);
