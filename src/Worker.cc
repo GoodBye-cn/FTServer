@@ -41,10 +41,11 @@ void Worker::process() {
             break;
         case SEND:
             /* 读取数据，调用Handler的write_data函数，直接放到bufferevent中，如果文件发送完，设置send_over为true */
-            ret = send_file();
+            ret = send_data();
             if (ret == 0) {
                 status = PARSE;
                 request.length = 0;
+                buff_size = 0;
             }
             return;
         default:
@@ -99,35 +100,37 @@ void Worker::open_file() {
     response.end[1] = '\n';
     response.end[2] = '\r';
     response.end[3] = '\n';
-    buff_size = sizeof(response);
-    memcpy(buff, &response, buff_size);
-    buff_wait_send = true;
-    handler->set_send_over(false);
+    // buff_size = sizeof(response);
+    // memcpy(buff, &response, buff_size);
+    // buff_wait_send = true;
+    // handler->set_send_over(false);
+    handler->create_write_buff(file_stat.st_size);
     printf("file size: %d\n", response.size);
 }
 
-int Worker::send_file() {
-    int ret = 0;
-    while (true) {
-        if (!buff_wait_send) {
-            buff_size = read(fd, buff, sizeof(buff));
-        }
-        /* 文件读取完毕 */
-        if (buff_size == 0) {
-            read_over = true;
-            close(fd);
-        }
-        ret = handler->write_data(buff, buff_size);
-        if (ret == -1) {
-            buff_wait_send = true;
-            return -1;
-        }
-        buff_wait_send = false;
-        if (!buff_wait_send && read_over) {
-            handler->set_send_over(true);
-            break;
+int Worker::send_data() {
+    int ret = -1;
+    if (response.size == -1) {
+        while (ret == -1) {
+            handler->write_data(buff, buff_size);
         }
     }
+
+    while (true) {
+        buff_size = read(fd, buff, sizeof(buff));
+        if (buff_size == 0) {
+            while (ret == -1) {
+                handler->write_data(buff, buff_size);
+            }
+            break;
+        }
+        if(buff_size == -1){
+            perror("read file error");
+            exit(1);
+        }
+        handler->write_to_buff(buff, buff_size);
+    }
+    close(fd);
     return 0;
 }
 

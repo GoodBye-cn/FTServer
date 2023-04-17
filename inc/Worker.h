@@ -28,7 +28,7 @@ public:
     void write_to_buff(char* data, size_t size);
     Worker::Line_Status parse_request();
     void open_file();
-    int send_file();
+    int send_data();
     Status get_status();
 
 private:

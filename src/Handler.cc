@@ -48,24 +48,13 @@ void Handler::read_cb(struct bufferevent* bev, void* ctx) {
 void Handler::write_cb(struct bufferevent* bev, void* ctx) {
     printf("write callback\n");
     Handler* handler = (Handler*)ctx;
-    /* 如果buff未发送完毕 */
-    if (!handler->buff_send_over) {
-        int ret;
-        std::unique_lock<std::mutex> lock(handler->buff_mutex);
-        size_t size = handler->buff_size - handler->write_index;
-        ret = bufferevent_write(bev, handler->buff + handler->write_index, size);
-        if (ret == 0) {
-            /* 发送成功，将清空缓存 */
-            handler->write_index = 0;
-            handler->buff_size = 0;
-            handler->buff_send_over = true;
-            /* 如果文件未完全将数据放到buff中，将任务添加到线程池任务队列，再次读取数据 */
-            if (!handler->send_over) {
-                handler->threadpool->append(handler->worker);
-            }
-        }
-        lock.unlock();
+    int ret;
+    ret = bufferevent_write(bev, handler->write_buffer + handler->send_index, handler->write_index - handler->send_index);
+    if (ret == -1) {
+        perror("send error");
+        return;
     }
+    delete handler->write_buffer;
 }
 
 void Handler::event_cb(struct bufferevent* bev, short what, void* ctx) {
@@ -81,11 +70,7 @@ void Handler::event_cb(struct bufferevent* bev, short what, void* ctx) {
  */
 int Handler::write_data(char* data, size_t size) {
     int ret = 0;
-    std::unique_lock<std::mutex> lock(buff_mutex);
-    memcpy(buff, data, size);
-    buff_size = size;
-    buff_send_over = false;
-    lock.unlock();
+    ret = bufferevent_write(bev, data, size);
     return ret;
 }
 
@@ -101,4 +86,19 @@ void Handler::set_reactor(Reactor* reactor) {
     this->reactor = reactor;
 }
 
-void Handler::create_buff(size_t size) {}
+void Handler::create_write_buff(size_t size) {
+    this->write_buffer = new char[size];
+    if (write_buffer == nullptr) {
+        perror("new write buffer error");
+        exit(1);
+    }
+    buff_size = size;
+    write_index = 0;
+    send_index = 0;
+    send_over = true;
+}
+
+void Handler::write_to_buff(char* data, size_t size) {
+    memcpy(write_buffer + send_index, data, size);
+    write_index += size;
+}

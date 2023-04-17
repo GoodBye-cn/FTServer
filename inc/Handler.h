@@ -21,7 +21,8 @@ public:
     void set_send_over(bool value);
     void set_threadpool(Threadpool<Worker>* tp);
     void set_reactor(Reactor* reactor);
-    void create_buff(size_t size);
+    void create_write_buff(size_t size);
+    void write_to_buff(char* data, size_t size);
 private:
     static void read_cb(struct bufferevent* bev, void* ctx);
     static void write_cb(struct bufferevent* bev, void* ctx);
@@ -33,7 +34,9 @@ private:
     Worker* worker;
     bool send_over, buff_send_over;
     char buff[BUFFLEN];
-    int buff_size, write_index;
+    char* write_buffer;
+    /* buff_size：文件的数据大小 write_index：已写入buff的数据大小 send_index：已发送的文件数据大小 */
+    int buff_size, write_index, send_index;
     std::mutex buff_mutex;
 };
 
