@@ -101,3 +101,6 @@ size_t len 文件的长度
 Worker应设置有处理函数
 
 Worker->process()
+
+
+# 由于bufferevent多线程操作有问题未解决，此版本放弃

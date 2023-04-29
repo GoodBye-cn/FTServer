@@ -100,10 +100,6 @@ void Worker::open_file() {
     response.end[1] = '\n';
     response.end[2] = '\r';
     response.end[3] = '\n';
-    // buff_size = sizeof(response);
-    // memcpy(buff, &response, buff_size);
-    // buff_wait_send = true;
-    // handler->set_send_over(false);
     handler->create_write_buff(file_stat.st_size);
     printf("file size: %d\n", response.size);
 }
@@ -119,12 +115,14 @@ int Worker::send_data() {
     while (true) {
         buff_size = read(fd, buff, sizeof(buff));
         if (buff_size == 0) {
+            buff_size = sizeof(response);
+            memcpy(buff, &response, buff_size);
             while (ret == -1) {
                 handler->write_data(buff, buff_size);
             }
             break;
         }
-        if(buff_size == -1){
+        if (buff_size == -1) {
             perror("read file error");
             exit(1);
         }

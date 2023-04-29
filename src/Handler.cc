@@ -21,6 +21,7 @@ Handler::Handler(bufferevent* bev) {
     this->write_index = 0;
     this->send_over = true;
     this->buff_send_over = true;
+    this->write_buffer = nullptr;
     bufferevent_setcb(bev, read_cb, write_cb, event_cb, this);
     bufferevent_enable(bev, EV_READ | EV_WRITE);
     this->worker = new Worker();
@@ -48,13 +49,17 @@ void Handler::read_cb(struct bufferevent* bev, void* ctx) {
 void Handler::write_cb(struct bufferevent* bev, void* ctx) {
     printf("write callback\n");
     Handler* handler = (Handler*)ctx;
+    if (handler->write_buffer == nullptr) {
+        return;
+    }
     int ret;
     ret = bufferevent_write(bev, handler->write_buffer + handler->send_index, handler->write_index - handler->send_index);
     if (ret == -1) {
         perror("send error");
         return;
     }
-    delete handler->write_buffer;
+    delete[] handler->write_buffer;
+    handler->write_buffer = nullptr;
 }
 
 void Handler::event_cb(struct bufferevent* bev, short what, void* ctx) {
